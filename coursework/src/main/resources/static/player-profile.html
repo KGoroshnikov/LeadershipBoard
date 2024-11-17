@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Player Profile</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Player Profile</h1>
+    <div id="profile">
+        <p><strong>Name:</strong> <span id="player-name"></span></p>
+        <p><strong>Region:</strong> <span id="player-region"></span></p>
+        <p><strong>Total Score:</strong> <span id="player-score"></span></p>
+        <p><strong>Premium:</strong> <span id="player-premium"></span></p>
+    </div>
+    <h2>Game History</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Score</th>
+                <th>Type</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="game-history">
+        </tbody>
+    </table>
+    <script>
+        // Функция для извлечения параметра из строки запроса URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+    
+        async function loadPlayerProfile() {
+            const playerId = getQueryParam('id'); // Получаем ID из URL
+            if (!playerId) {
+                alert('Player ID is missing!');
+                return;
+            }
+    
+            const response = await fetch(`/players/${playerId}`);
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('player-name').textContent = data.player.name;
+                document.getElementById('player-region').textContent = data.player.region;
+                document.getElementById('player-score').textContent = data.player.totalScore;
+                document.getElementById('player-premium').textContent = data.player.isPremium ? 'Yes' : 'No';
+    
+                const historyTable = document.getElementById('game-history');
+                data.history.forEach(game => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${game.id}</td>
+                        <td>${game.score}</td>
+                        <td>${game.gameType}</td>
+                        <td>${game.date}</td>
+                    `;
+                    historyTable.appendChild(row);
+                });
+            } else {
+                alert('Player ' + playerId.toString() + ' not found!');
+            }
+        }
+    
+        // Загружаем профиль при загрузке страницы
+        loadPlayerProfile();
+    </script>
+    
+    
+</body>
+</html>

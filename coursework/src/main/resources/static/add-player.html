@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Player</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Add a New Player</h1>
+    <form id="player-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+        <label for="region">Region:</label>
+        <input type="text" id="region" required>
+        <label for="isPremium">Premium:</label>
+        <input type="checkbox" id="isPremium">
+        <button type="submit">Add Player</button>
+    </form>
+    <script>
+        document.getElementById('player-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const player = {
+                name: document.getElementById('name').value,
+                region: document.getElementById('region').value,
+                isPremium: document.getElementById('isPremium').checked
+            };
+            const response = await fetch('/players', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(player)
+            });
+            if (response.ok) {
+                alert('Player added successfully!');
+                window.location.href = '/index.html';
+            } else {
+                alert('Error adding player!');
+            }
+        });
+    </script>
+</body>
+</html>
