@@ -50,6 +50,11 @@
         </tbody>
     </table>
 
+    <div max-width="400" display="flex">
+        <canvas id="regionChart" width="400" height="200"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         async function loadLeaderboard(params = {}) {
             const query = new URLSearchParams(params).toString();
@@ -88,8 +93,53 @@
             loadLeaderboard(params);
         }
 
+        async function loadRegionChart() {
+            const response = await fetch('/leaderboard/statistics/regions');
+            if (response.ok) {
+                const data = await response.json();
+                const labels = Object.keys(data); // Названия регионов
+                const values = Object.values(data); // Количество игроков в регионах
+
+                // Построение графика
+                new Chart(document.getElementById('regionChart'), {
+                    type: 'pie', // Тип графика (круговая диаграмма)
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Players by Region',
+                            data: values,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.6)',
+                                'rgba(54, 162, 235, 0.6)',
+                                'rgba(255, 206, 86, 0.6)',
+                                'rgba(75, 192, 192, 0.6)',
+                                'rgba(153, 102, 255, 0.6)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Players by Region'
+                            }
+                        }
+                    }
+                });
+            } else {
+                alert('Error loading region statistics');
+            }
+        }
+
         // Загрузка начального рейтинга
         loadLeaderboard();
+
+        loadRegionChart();
     </script>
 </body>
 </html>

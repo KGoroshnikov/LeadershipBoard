@@ -26,6 +26,8 @@
         <tbody id="game-history">
         </tbody>
     </table>
+    <canvas id="progressChart" width="400" height="200"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Функция для извлечения параметра из строки запроса URL
         function getQueryParam(param) {
@@ -61,6 +63,44 @@
                 });
             } else {
                 alert('Player ' + playerId.toString() + ' not found!');
+            }
+            loadProgressChart(playerId);
+        }
+        async function loadProgressChart(playerId) {
+            const response = await fetch(`/players/${playerId}/progress`);
+            if (response.ok) {
+                const data = await response.json();
+                const labels = data.map(entry => entry.date); // Даты игр
+                const values = data.map(entry => entry.score); // Очки за игры
+
+                // Построение графика
+                new Chart(document.getElementById('progressChart'), {
+                    type: 'line', // Линейный график
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Score Progress',
+                            data: values,
+                            fill: false,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Score Progress Over Time'
+                            }
+                        }
+                    }
+                });
+            } else {
+                alert('Error loading player progress');
             }
         }
     

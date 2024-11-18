@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -16,6 +18,8 @@ public class GameResult {
     private String gameType;
 
     @ManyToOne
+    @JoinColumn(name = "player_id", nullable = false)
+    @JsonBackReference
     private Player player;
 
     private LocalDateTime date = LocalDateTime.now();

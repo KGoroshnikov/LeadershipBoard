@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/players")
@@ -34,4 +35,10 @@ public class PlayerController {
         List<GameResult> gameResults = gameResultRepository.findByPlayerId(id);
         return ResponseEntity.ok(new PlayerProfileResponse(player, gameResults));
     }
+
+    @GetMapping("/{id}/progress")
+    public List<Map<String, Object>> getPlayerProgress(@PathVariable Long id) {
+        return gameResultRepository.findScoreProgressByPlayerId(id);
+    }
+
 }
