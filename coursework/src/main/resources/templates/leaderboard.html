@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Leaderboard</h1>
+    <div>
+        <label for="region">Region:</label>
+        <select id="region">
+            <option value="">All</option>
+            <option value="Europe">Europe</option>
+            <option value="Asia">Asia</option>
+            <option value="North America">North America</option>
+        </select>
+
+        <label for="isPremium">Premium:</label>
+        <select id="isPremium">
+            <option value="">All</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+
+        <label for="sortBy">Sort By:</label>
+        <select id="sortBy">
+            <option value="totalScore">Score</option>
+            <option value="name">Name</option>
+        </select>
+
+        <label for="order">Order:</label>
+        <select id="order">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+        </select>
+
+        <button onclick="applyFilters()">Apply Filters</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Region</th>
+                <th>Premium</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard-table">
+        </tbody>
+    </table>
+
+    <div max-width="400" display="flex">
+        <canvas id="regionChart" width="400" height="200"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        async function loadLeaderboard(params = {}) {
+            const query = new URLSearchParams(params).toString();
+            const response = await fetch(`/leaderboard?${query}`);
+            if (response.ok) {
+                const players = await response.json();
+                const tableBody = document.getElementById('leaderboard-table');
+                tableBody.innerHTML = ''; // Очищаем таблицу
+                players.forEach(player => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><a href="/player-profile.html?id=${player.id}">${player.name}</a></td>
+                        <td>${player.totalScore}</td>
+                        <td>${player.region}</td>
+                        <td>${player.isPremium ? 'Yes' : 'No'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                alert('Error loading leaderboard');
+            }
+        }
+
+        function applyFilters() {
+            const region = document.getElementById('region').value;
+            const isPremium = document.getElementById('isPremium').value;
+            const sortBy = document.getElementById('sortBy').value;
+            const order = document.getElementById('order').value;
+
+            const params = {};
+            if (region) params.region = region;
+            if (isPremium) params.isPremium = isPremium;
+            params.sortBy = sortBy;
+            params.order = order;
+
+            loadLeaderboard(params);
+        }
+
+        async function loadRegionChart() {
+            const response = await fetch('/leaderboard/statistics/regions');
+            if (response.ok) {
+                const data = await response.json();
+                const labels = Object.keys(data); // Названия регионов
+                const values = Object.values(data); // Количество игроков в регионах
+
+                // Построение графика
+                new Chart(document.getElementById('regionChart'), {
+                    type: 'pie', // Тип графика (круговая диаграмма)
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Players by Region',
+                            data: values,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.6)',
+                                'rgba(54, 162, 235, 0.6)',
+                                'rgba(255, 206, 86, 0.6)',
+                                'rgba(75, 192, 192, 0.6)',
+                                'rgba(153, 102, 255, 0.6)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Players by Region'
+                            }
+                        }
+                    }
+                });
+            } else {
+                alert('Error loading region statistics');
+            }
+        }
+
+        // Загрузка начального рейтинга
+        loadLeaderboard();
+
+        loadRegionChart();
+    </script>
+</body>
+</html>
