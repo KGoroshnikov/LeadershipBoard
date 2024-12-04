@@ -15,6 +15,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column()
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -26,10 +29,11 @@ public class User {
     public User() {}
 
     // Конструктор с параметрами
-    public User(String username, String password, Role role) {
+    public User(String username, String password, Role role, String email) {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.email = email;
     }
 
     // Getters и setters
@@ -47,6 +51,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

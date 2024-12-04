@@ -2,59 +2,248 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
-    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* Общий стиль для страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: #ffffff;
+        }
+
+        /* Контейнер для контента */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            color: #333333;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Заголовок */
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        /* Форма фильтров */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #555555;
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 10px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333333;
+            background: #f9f9f9;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5a63e0, #000ad1);
+        }
+
+        /* Таблица */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead {
+            background: #6b73ff;
+            color: #ffffff;
+        }
+
+        table thead th {
+            padding: 15px;
+            font-size: 1rem;
+        }
+
+        table tbody tr:nth-child(odd) {
+            background: #f9f9f9;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: #ffffff;
+        }
+
+        table tbody td {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #555555;
+        }
+
+        table tbody a {
+            text-decoration: none;
+            color: #6b73ff;
+            font-weight: bold;
+        }
+
+        table tbody a:hover {
+            text-decoration: underline;
+        }
+
+        /* Диаграмма */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        #regionChart {
+            max-width: 600px;
+            max-height: 400px;
+        }
+
+        /* Кнопка "Применить фильтры" */
+        .filters-container {
+            text-align: center;
+        }
+        .back-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, #5a63e0, #000ad1);
+        }
+
+        .admin-panel-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #ff6b73, #ff0000);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 20px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .admin-panel-btn:hover {
+            background: linear-gradient(135deg, #ff3b53, #d10000);
+        }
+    </style>
 </head>
 <body>
-    <h1>Leaderboard</h1>
-    <div>
-        <label for="region">Region:</label>
-        <select id="region">
-            <option value="">All</option>
-            <option value="Europe">Europe</option>
-            <option value="Asia">Asia</option>
-            <option value="North America">North America</option>
-        </select>
+    <div class="container">
+        <h1>Leaderboard</h1>
+        <a href="/user/profile" class="back-button">Profile</a>
+        
+        <!-- Кнопка панели администратора (только для администраторов) -->
+        <div th:if="${isAdmin}">
+            <a href="/admin-page" class="admin-panel-btn">Admin Panel</a>
+        </div>
 
-        <label for="isPremium">Premium:</label>
-        <select id="isPremium">
-            <option value="">All</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
+        <!-- Форма фильтров -->
+        <form>
+            <div>
+                <label for="region">Region:</label>
+                <select id="region">
+                    <option value="">All</option>
+                    <option value="Europe">Europe</option>
+                    <option value="Asia">Asia</option>
+                    <option value="North America">North America</option>
+                </select>
+            </div>
 
-        <label for="sortBy">Sort By:</label>
-        <select id="sortBy">
-            <option value="totalScore">Score</option>
-            <option value="name">Name</option>
-        </select>
+            <div>
+                <label for="isPremium">Premium:</label>
+                <select id="isPremium">
+                    <option value="">All</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
 
-        <label for="order">Order:</label>
-        <select id="order">
-            <option value="desc">Descending</option>
-            <option value="asc">Ascending</option>
-        </select>
+            <div>
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy">
+                    <option value="totalScore">Score</option>
+                    <option value="name">Name</option>
+                </select>
+            </div>
 
-        <button onclick="applyFilters()">Apply Filters</button>
+            <div>
+                <label for="order">Order:</label>
+                <select id="order">
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                </select>
+            </div>
+
+            <div class="filters-container">
+                <button type="button" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </form>
+
+        <!-- Таблица лидеров -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Region</th>
+                    <th>Premium</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-table">
+            </tbody>
+        </table>
+
+        <!-- Диаграмма -->
+        <div class="chart-container">
+            <canvas id="regionChart"></canvas>
+        </div>
     </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Score</th>
-                <th>Region</th>
-                <th>Premium</th>
-            </tr>
-        </thead>
-        <tbody id="leaderboard-table">
-        </tbody>
-    </table>
 
-    <div max-width="400" display="flex">
-        <canvas id="regionChart" width="400" height="200"></canvas>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
         async function loadLeaderboard(params = {}) {
             const query = new URLSearchParams(params).toString();
@@ -97,12 +286,11 @@
             const response = await fetch('/leaderboard/statistics/regions');
             if (response.ok) {
                 const data = await response.json();
-                const labels = Object.keys(data); // Названия регионов
-                const values = Object.values(data); // Количество игроков в регионах
+                const labels = Object.keys(data);
+                const values = Object.values(data);
 
-                // Построение графика
                 new Chart(document.getElementById('regionChart'), {
-                    type: 'pie', // Тип графика (круговая диаграмма)
+                    type: 'pie',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -119,7 +307,7 @@
                         }]
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         plugins: {
                             legend: {
                                 position: 'top',
@@ -136,9 +324,7 @@
             }
         }
 
-        // Загрузка начального рейтинга
         loadLeaderboard();
-
         loadRegionChart();
     </script>
 </body>

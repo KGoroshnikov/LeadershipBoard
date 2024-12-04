@@ -19,9 +19,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("Attempting to find user: " + username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-        
+
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword()) // Убедись, что пароль из БД зашифрован
@@ -36,6 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(User.Role.USER);
+        user.setEmail("");
         userRepository.save(user);
     }
 }

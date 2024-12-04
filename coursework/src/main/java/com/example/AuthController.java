@@ -26,8 +26,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@RequestParam String username, @RequestParam String password, Model model) {
+    public String handleRegister(@RequestParam String username, @RequestParam String password, @RequestParam String confirmPassword, Model model) {
         try {
+            if (!password.equals(confirmPassword)){
+                model.addAttribute("error", "Registration failed");
+                return "register";
+            }
             userDetailsService.registerUser(username, password);
             return "redirect:/login?success";
         } catch (Exception e) {

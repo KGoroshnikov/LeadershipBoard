@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+            color: #333;
+        }
+        .logout-button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff3b3b, #d10e0e);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .logout-button:hover {
+            background: linear-gradient(135deg, #ff5c5c, #b50c0c);
+        }
+        .submit-button {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(135deg, #5a63e0, #000ad1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form action="/leaderboard-page">
+            <button type="submit" class="submit-button">Back</button>
+        </form>
+        <h1>User Profile</h1>
+        <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+        <p><strong>Role:</strong> <span th:text="${user.role}"></span></p>
+        
+        <!-- Кнопка выхода -->
+        <form action="/logout" method="post">
+            <button type="submit" class="logout-button">Log Out</button>
+        </form>
+    </div>
+</body>
+</html>

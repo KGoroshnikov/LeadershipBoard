@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        /* Общий стиль для страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: #ffffff;
+        }
+
+        /* Контейнер для контента */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            color: #333333;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Заголовок */
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+
+        /* Форма фильтров и добавления/редактирования игрока */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #555555;
+            margin-right: 10px;
+        }
+
+        input, button {
+            padding: 10px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333333;
+            background: #f9f9f9;
+        }
+
+        button {
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5a63e0, #000ad1);
+        }
+
+        /* Таблица */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead {
+            background: #6b73ff;
+            color: #ffffff;
+        }
+
+        table thead th {
+            padding: 15px;
+            font-size: 1rem;
+        }
+
+        table tbody tr:nth-child(odd) {
+            background: #f9f9f9;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: #ffffff;
+        }
+
+        table tbody td {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #555555;
+        }
+
+        table tbody a {
+            text-decoration: none;
+            color: #6b73ff;
+            font-weight: bold;
+        }
+
+        table tbody a:hover {
+            text-decoration: underline;
+        }
+
+        /* Диаграмма */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        #regionChart {
+            max-width: 600px;
+            max-height: 400px;
+        }
+
+        /* Кнопка для админ панели */
+        .admin-panel-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #ff6b73, #ff0000);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .admin-panel-btn:hover {
+            background: linear-gradient(135deg, #ff3b53, #d10000);
+        }
+
+        /* Кнопки для удаления и редактирования */
+        .action-buttons button {
+            margin: 5px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel</h1>
+
+        <form action="/leaderboard-page">
+            <button type="submit" class="action-buttons">Back</button>
+        </form>
+
+        <!-- Таблица игроков -->
+        <div>
+            <h2>Players</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Region</th>
+                        <th>Premium</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="player-table">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Форма для добавления нового игрока -->
+        <h2>Add New Player</h2>
+        <form id="add-player-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="score">Score:</label>
+            <input type="number" id="score" required>
+            <label for="region">Region:</label>
+            <input type="text" id="region" required>
+            <label for="premium">Premium:</label>
+            <input type="checkbox" id="premium">
+            <button type="submit">Add Player</button>
+        </form>
+
+        <!-- Форма для редактирования игрока -->
+        <h2>Edit Player</h2>
+        <form id="edit-player-form" style="display: none;">
+            <input type="hidden" id="edit-player-id">
+            <label for="edit-name">Name:</label>
+            <input type="text" id="edit-name" required>
+            <label for="edit-score">Score:</label>
+            <input type="number" id="edit-score" required>
+            <label for="edit-region">Region:</label>
+            <input type="text" id="edit-region" required>
+            <label for="edit-premium">Premium:</label>
+            <input type="checkbox" id="edit-premium">
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <!-- Форма для добавления игры -->
+        <h2>Add Game to Player</h2>
+        <form id="add-game-form" style="display: none;">
+            <input type="hidden" id="game-player-id">
+            <label for="game-score">Score:</label>
+            <input type="number" id="game-score" required>
+            <label for="game-type">Game Type:</label>
+            <input type="text" id="game-type" required>
+            <label for="game-date">Date:</label>
+            <input type="datetime-local" id="game-date" required>
+            <button type="submit">Add Game</button>
+        </form>
+
+    </div>
+
+    <script>
+        // Загрузка списка игроков
+        async function loadPlayers() {
+            const response = await fetch('/admin/players');
+            if (response.ok) {
+                const players = await response.json();
+                const tableBody = document.getElementById('player-table');
+                tableBody.innerHTML = ''; // Очищаем таблицу
+
+                players.forEach(player => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${player.id}</td>
+                        <td>${player.name}</td>
+                        <td>${player.totalScore}</td>
+                        <td>${player.region}</td>
+                        <td>${player.isPremium ? 'Yes' : 'No'}</td>
+                        <td class="action-buttons">
+                            <button onclick="deletePlayer(${player.id})">Delete</button>
+                            <button onclick="editPlayer(${player.id})">Edit</button>
+                            <button onclick="addGameToPlayer(${player.id})">Add Game</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                alert('Failed to load players');
+            }
+        }
+
+        // Добавление нового игрока
+        document.getElementById('add-player-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const player = {
+                name: document.getElementById('name').value,
+                totalScore: document.getElementById('score').value,
+                region: document.getElementById('region').value,
+                isPremium: document.getElementById('premium').checked ? 1 : 0
+            };
+
+            const response = await fetch('/admin/players', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(player)
+            });
+
+            if (response.ok) {
+                alert('Player added successfully');
+                loadPlayers();
+            } else {
+                alert('Failed to add player');
+            }
+        });
+
+        // Удаление игрока
+        async function deletePlayer(playerId) {
+            const response = await fetch(`/admin/players/${playerId}`, { method: 'DELETE' });
+            if (response.ok) {
+                alert('Player deleted successfully');
+                loadPlayers();
+            } else {
+                alert('Failed to delete player ' + playerId);
+            }
+        }
+
+        // Открытие формы редактирования
+        function editPlayer(playerId) {
+            fetch(`/admin/players/${playerId}`)
+                .then(response => response.json())
+                .then(player => {
+                    document.getElementById('edit-player-id').value = player.id;
+                    document.getElementById('edit-name').value = player.name;
+                    document.getElementById('edit-score').value = player.totalScore;
+                    document.getElementById('edit-region').value = player.region;
+                    document.getElementById('edit-premium').checked = player.isPremium;
+                    document.getElementById('edit-player-form').style.display = 'block';
+                })
+                .catch(error => alert('Failed to load player: ' + error.message));
+        }
+
+        // Сохранение изменений
+        document.getElementById('edit-player-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const playerId = document.getElementById('edit-player-id').value;
+            const updatedPlayer = {
+                name: document.getElementById('edit-name').value,
+                totalScore: document.getElementById('edit-score').value,
+                region: document.getElementById('edit-region').value,
+                isPremium: document.getElementById('edit-premium').checked ? 1 : 0,
+            };
+
+            const response = await fetch(`/admin/players/${playerId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedPlayer),
+            });
+
+            if (response.ok) {
+                alert('Player updated successfully');
+                document.getElementById('edit-player-form').style.display = 'none';
+                loadPlayers();
+            } else {
+                alert('Failed to update player');
+            }
+        });
+
+        // Открытие формы добавления игры
+        function addGameToPlayer(playerId) {
+            document.getElementById('game-player-id').value = playerId;
+            document.getElementById('add-game-form').style.display = 'block';
+        }
+
+        // Сохранение новой игры
+        document.getElementById('add-game-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const playerId = document.getElementById('game-player-id').value;
+            const newGame = {
+                score: document.getElementById('game-score').value,
+                gameType: document.getElementById('game-type').value,
+                date: document.getElementById('game-date').value,
+            };
+
+            const response = await fetch(`/admin/players/${playerId}/games`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newGame),
+            });
+
+            if (response.ok) {
+                alert('Game added successfully');
+                document.getElementById('add-game-form').style.display = 'none';
+                loadPlayers();
+            } else {
+                alert('Failed to add game');
+            }
+        });
+
+        // Загрузка списка игроков при загрузке страницы
+        loadPlayers();
+    </script>
+</body>
+</html>

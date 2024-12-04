@@ -39,6 +39,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+<dependency>
+    <groupId>jakarta.servlet</groupId>
+    <artifactId>jakarta.servlet-api</artifactId>
+    <version>5.0.0</version> <!-- Версия может быть обновлена при необходимости -->
+    <scope>provided</scope>
+</dependency>
+
+
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
