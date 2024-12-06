@@ -18,7 +18,7 @@ public class Player {
     private String region;
     private int isPremium;
     @OneToMany(mappedBy = "player", cascade = CascadeType.REMOVE)
-    @JsonIgnore // Игнорируем поле при сериализации
+    @JsonIgnore
     private List<GameResult> gameResults;
 
     public boolean isPremium() {

@@ -30,13 +30,13 @@ public class AuthController {
         try {
             if (!password.equals(confirmPassword)){
                 model.addAttribute("error", "Registration failed");
-                return "register";
+                return "redirect:/register?error";
             }
             userDetailsService.registerUser(username, password);
             return "redirect:/login?success";
         } catch (Exception e) {
             model.addAttribute("error", "Registration failed");
-            return "register";
+            return "redirect:/register?error";
         }
     }
 }

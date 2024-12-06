@@ -19,25 +19,6 @@ public class LeaderboardController {
     @Autowired
     private PlayerRepository playerRepository;
 
-    // Получение топ-лидеров
-    /*@GetMapping("/top")
-    public List<Player> getTopPlayers(@RequestParam(defaultValue = "10") int limit) {
-        return playerRepository.findTopPlayers(PageRequest.of(0, limit));
-    }
-
-    // Получение лидеров по региону
-    @GetMapping("/region")
-    public List<Player> getTopPlayersByRegion(@RequestParam String region, @RequestParam(defaultValue = "10") int limit) {
-        return playerRepository.findByRegion(region, PageRequest.of(0, limit));
-    }
-
-    // Получение премиум-лидеров
-    @GetMapping("/premium")
-    public List<Player> getPremiumPlayers(@RequestParam(defaultValue = "10") int limit) {
-        return playerRepository.findPremiumPlayers(PageRequest.of(0, limit));
-    }*/
-
-    // Получение списка игроков с фильтрами и сортировкой
     @GetMapping
     public List<Player> getFilteredLeaderboard(
             @RequestParam(required = false) String region,

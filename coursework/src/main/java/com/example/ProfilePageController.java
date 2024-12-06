@@ -27,6 +27,6 @@ public class ProfilePageController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
         model.addAttribute("user", user);
-        return "profile"; // Отправляем на страницу profile.html
+        return "profile";
     }
 }

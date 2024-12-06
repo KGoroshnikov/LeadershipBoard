@@ -23,10 +23,6 @@ public class AdminController {
         return playerRepository.save(player);
     }
 
-    /*@DeleteMapping("/players/{id}")
-    public void deletePlayer(@PathVariable Long id) {
-        playerRepository.deleteById(id);
-    }*/
     @DeleteMapping("/players/{id}")
     public ResponseEntity<?> deletePlayer(@PathVariable Long id) {
         try {
@@ -38,8 +34,6 @@ public class AdminController {
         }
     }
 
-
-    // Редактирование игрока
     @PutMapping("/players/{id}")
     public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player updatedPlayer) {
         System.out.println("Received isPremium: " + updatedPlayer.isPremium());
@@ -65,22 +59,16 @@ public class AdminController {
     public ResponseEntity<GameResult> addGameToPlayer(@PathVariable Long id, @RequestBody GameResult gameResult) {
         return playerRepository.findById(id)
                 .map(player -> {
-                    // Связываем игру с игроком
                     gameResult.setPlayer(player);
-    
-                    // Сохраняем игру
                     gameResultRepository.save(gameResult);
-    
-                    // Обновляем счёт игрока
                     int newScore = player.getTotalScore() + gameResult.getScore();
-                    player.setTotalScore(Math.max(newScore, 0)); // Счёт не может быть меньше 0
+                    player.setTotalScore(Math.max(newScore, 0));
                     playerRepository.save(player);
     
                     return ResponseEntity.ok(gameResult);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
-    
 
     @GetMapping("/players/{id}")
     public ResponseEntity<Player> getPlayerById(@PathVariable Long id) {

@@ -25,10 +25,7 @@ public class User {
         ADMIN, USER
     }
 
-    // Конструктор по умолчанию (обязателен для JPA)
     public User() {}
-
-    // Конструктор с параметрами
     public User(String username, String password, Role role, String email) {
         this.username = username;
         this.password = password;
@@ -36,7 +33,6 @@ public class User {
         this.email = email;
     }
 
-    // Getters и setters
     public Long getId() {
         return id;
     }

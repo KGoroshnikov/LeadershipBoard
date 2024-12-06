@@ -16,11 +16,7 @@ public class LeaderboardPageController {
     public String showLeaderboardPage(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Добавляем информацию о пользователе и его роли в модель
         model.addAttribute("isAdmin", user.getRole().equals(User.Role.ADMIN));
-
-        // Остальная логика для загрузки leaderboard
-        return "leaderboard"; // Отправляем на страницу leaderboard.html
+        return "leaderboard";
     }
 }

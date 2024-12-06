@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Profile</title>
     <style>
-        /* Общий стиль для страницы */
         body {
             margin: 0;
             padding: 0;
@@ -18,8 +17,6 @@
             flex-direction: column;
             min-height: 100vh;
         }
-
-        /* Контейнер для основного контента */
         .container {
             width: 90%;
             max-width: 1200px;
@@ -29,14 +26,10 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
-
-        /* Заголовок страницы */
         h1, h2 {
             text-align: center;
             color: #333333;
         }
-
-        /* Секция профиля */
         #profile {
             margin-bottom: 20px;
         }
@@ -147,14 +140,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Функция для извлечения параметра из строки запроса URL
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
     
         async function loadPlayerProfile() {
-            const playerId = getQueryParam('id'); // Получаем ID из URL
+            const playerId = getQueryParam('id');
             if (!playerId) {
                 alert('Player ID is missing!');
                 return;
@@ -188,12 +180,10 @@
             const response = await fetch(`/players/${playerId}/progress`);
             if (response.ok) {
                 const data = await response.json();
-                const labels = data.map(entry => entry.date); // Даты игр
-                const values = data.map(entry => entry.score); // Очки за игры
-
-                // Построение графика
+                const labels = data.map(entry => entry.date);
+                const values = data.map(entry => entry.score);
                 new Chart(document.getElementById('progressChart'), {
-                    type: 'line', // Линейный график
+                    type: 'line',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -221,8 +211,6 @@
                 alert('Error loading player progress');
             }
         }
-    
-        // Загружаем профиль при загрузке страницы
         loadPlayerProfile();
     </script>
 </body>
